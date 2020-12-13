@@ -21,14 +21,27 @@ use rand::{thread_rng, Rng};
 use std::cmp::Ordering;
 
 fn main() {
-    let input_val = get_input();
+    println!("---------- Guess the Number ----------");
     let secret = generate_secret_number();
-    println!("The generated number is: {}\nYour guess is: {}", secret, input_val);
 
-    match input_val.cmp(&secret) {
-        Ordering::Less => println!("Too small"),
-        Ordering::Greater => println!("Too big"),
-        Ordering::Equal => println!("You win"),
+    // Allow for multiple guesses
+    loop {
+        // Convert the string returned by get_input to a number, and run match to handle errors
+        let input_val: u32 = match get_input().trim().parse() {
+            Ok(num) => num,
+            Err(_) => continue,
+        };
+        println!("Your guess is: {}\n", input_val);
+
+        match input_val.cmp(&secret) {
+            Ordering::Less => println!("Too small!\n"),
+            Ordering::Greater => println!("Too big!\n"),
+            Ordering::Equal => {
+                println!("You win!!!!\n");
+                println!("You guessed {} correctly!", secret);
+                break;
+            },
+        }
     }
 }
 
@@ -48,8 +61,7 @@ fn generate_secret_number() -> u32 {
 ///
 /// # Return
 /// an u32 int of the user input.
-fn get_input() -> u32 {
-    println!("Guess the Number!");
+fn get_input() -> String {
     println!("Please input a number.");
 
     let mut input_num = String::new();
@@ -61,7 +73,6 @@ fn get_input() -> u32 {
         .read_line(&mut input_num)
         .expect("Failed to read line");
     //.read_line returns a value of the type Result, an enum, has values Ok and Err, need to handle in case of Err
-    let input_num: u32 = input_num.trim().parse().expect("Please type a number!");
-    // println!("Your guess is: {}", input_num);
+
     return input_num;
 }
